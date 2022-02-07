@@ -62,7 +62,11 @@ jobs:
           CONN_STR=$(echo $CONN_STR | sed "s/<username>/${{ env.SQLADMIN_LOGIN }}/g")
           CONN_STR=$(echo $CONN_STR | sed "s/<password>/${{ env.SQLADMIN_PASS }}/g")
           echo "SQL_DB_CONN_STR=$CONN_STR" >> $GITHUB_ENV
-
+      - name: Add Client IP to Azure Server Firewall
+        run: |
+          $ipAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+          az sql server firewall-rule create --name AllowClientIP --server ${{ env.SQLSERVER_NAME }} --resource-group ${{ env.AZURE_RESOURCEGROUP_NAME }} --start-ip-address $ipAddress --end-ip-address $ipAddress 
+      
       - name: Update Database
         run: |
           dotnet tool install --global dotnet-ef
