@@ -30,7 +30,9 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS  }}
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+            environment: 'AzureUSGovernment'
+            enable-AzPSSession: false
       
       # Checkout
       - name: Checkout
