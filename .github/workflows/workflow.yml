@@ -63,6 +63,7 @@ jobs:
           CONN_STR=$(echo $CONN_STR | sed "s/<password>/${{ env.SQLADMIN_PASS }}/g")
           echo "SQL_DB_CONN_STR=$CONN_STR" >> $GITHUB_ENV
       - name: Add Client IP to Azure Server Firewall
+        shell: pwsh
         run: |
           queryMyClientIP=$(Invoke-WebRequest -uri "http://ifconfig.me/ip")
           ipAddress=$(queryMyClientIP).Content
