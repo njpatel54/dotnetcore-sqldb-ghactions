@@ -75,6 +75,10 @@ jobs:
         env:
           ConnectionStrings__MyDbConnection: ${{ env.SQL_DB_CONN_STR }}
       
+      - name: Configure MyDbConnection String
+        run: |
+          az webapp config connection-string set --resource-group ${{ env.AZURE_RESOURCEGROUP_NAME }} --name ${{ env.AZURE_WEBAPP_NAME }} --settings ${{ env.SQL_DB_CONN_STR }} --connection-string-type SQLAzure
+          
       - name: Swap to production slot
         run: |
           az webapp deployment slot swap --resource-group ${{ env.AZURE_RESOURCEGROUP_NAME }} --name ${{ env.AZURE_WEBAPP_NAME }} --slot staging --target-slot production
