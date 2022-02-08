@@ -56,7 +56,7 @@ jobs:
             environment: 'AzureUSGovernment'
             enable-AzPSSession: false
 
-      - name: create db connection string
+      - name: Create Database Connection String
         run: |
           CONN_STR=$(az sql db show-connection-string --client ado.net --server ${{ env.SQLSERVER_NAME }} --name ${{ env.DATABASE_NAME }} -o tsv)
           CONN_STR=$(echo $CONN_STR | sed "s/<username>/${{ env.SQLADMIN_LOGIN }}/g")
@@ -65,7 +65,8 @@ jobs:
       - name: Add Client IP to Azure Server Firewall
         shell: pwsh
         run: |
-          Invoke-WebRequest -uri "http://ifconfig.me/ip"
+          $ipAddress = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+          az sql server firewall-rule create --name AllowClientIP --server ${{ env.SQLSERVER_NAME }} --resource-group ${{ env.AZURE_RESOURCEGROUP_NAME }} --start-ip-address $ipAddress --end-ip-address $ipAddress
                 
       - name: Update Database
         run: |
